@@ -19,28 +19,29 @@
 using namespace std;
 
 struct Player {
-    string firstname;
-    string lastname;
+    string firstname = " ";
+    string lastname = " ";
     int wins = 0;
     int loses = 0;
     char piece;
     bool turn;
 };
 
-string get_player_move(string firstname);
+bool validate_name(string full_name);
+void get_player_move(Board board, string firstname, char piece);
 int get_players(Player players[5]);
 void play_game(Player players[5], int number_of_players, int &draws);
 void update_loses(Player player[5], int winning_index, int amount_players);
 void display_stats(Player player[5], int amount_of_players, int draws, int total_games_played);
 string set_display_space(Player player[5], int amount_of_players, int current_player_name_length);
-string standardize_names(string name);
+void standardize_names(Player &player, string user_entered_name);
 
 using namespace std;
 int main(int argc, const char * argv[]) {
     Player players[5];
     int number_of_players = get_players(players);
     int draws = 0;
-    //play_game(players, number_players, draws);
+    play_game(players, number_of_players, draws);
     int total_games_played;
     display_stats(players, number_of_players, draws, total_games_played);
     
@@ -55,24 +56,42 @@ int main(int argc, const char * argv[]) {
 
 void play_game(Player players[5], int number_of_players, int &draws) {
     
-    int rows;
-    int columns;
+    string rows;
+    string columns;
+    int numeric_value_of_rows;
+    int numeric_value_of_columns;
     int amount_of_turns = 0;
     int player_turn = 0;
     bool game_won = false;
     
-    cout << "Enter amount of rows for the board: ";
-    cin >> rows;
-    cout << "Enter amount of columns for the board: ";
-    cin >> columns;
+    do {
+        
+        cout << "Enter amount of rows for the board: ";
+        getline(cin, rows);
+        cout << "Enter amount of columns for the board: ";
+        getline(cin, columns);
+        
+        int numeric_value_of_rows = stoi(rows);
+        int numeric_value_of_columns = stoi(columns);
+
+
+        if (numeric_value_of_rows < 3 || numeric_value_of_columns < 3) {
+            
+            cout << "Invalid Input" << endl;
+            
+        }
+        
+    } while (numeric_value_of_rows < 3 || numeric_value_of_columns < 3);
+
     
-    Board board(rows, columns);
+    Board board(numeric_value_of_rows, numeric_value_of_columns);
     
-    while (player_turn <= (rows * columns) && !game_won) {
+    while (player_turn <= (numeric_value_of_columns * numeric_value_of_columns) && !game_won) {
         cout << "amout of turns: " << amount_of_turns << endl;
+        
         Player current_player = players[amount_of_turns];
         board.display_board();
-        board.edit_board(get_player_move(current_player.firstname), current_player.piece);
+        get_player_move(board, players[amount_of_turns].firstname, current_player.piece);
         
         if (board.search_for_win(current_player.piece)) {
             
@@ -111,14 +130,44 @@ void play_game(Player players[5], int number_of_players, int &draws) {
     
 }
 
-string get_player_move(string firstname) {
+void get_player_move(Board board, string firstname, char piece) {
     
+    bool is_space_available;
     string move;
+    int row;
+    int column;
     
-    cout << endl << firstname <<", enter the number on the board where you want to move: ";
-    cin >> move;
-    
-    return move;
+    do {
+        
+        cout << endl << firstname <<", enter the number on the board where you want to move: ";
+        getline(cin,move);
+        row = move[0] - 65;
+        
+        if (move.length() == 2) {
+            
+            column = int(move[1]);
+            
+        }
+        
+        else {
+            
+            string temporary_column = move.substr(move.length() - 2);
+            column = stoi(temporary_column);
+            
+        }
+        
+        column -= 1;
+        is_space_available = board.check_avaiblity(row, column);
+        
+        if (!is_space_available) {
+            
+            cout << "Space has been taken please choose a new move" << endl;
+            
+        }
+        
+    } while(!is_space_available);
+
+    board.edit_board(row, column, piece);
     
 }
 
@@ -130,37 +179,88 @@ string get_player_move(string firstname) {
 
 int get_players(Player players[]) {
     
-    int number_of_players;
-
-    cout << "How many Players are playing: ";
-    cin >> number_of_players;
+    string number_of_players;
+    bool validated_amount_of_players_choosen;
     
-    for (int i = 0; i < number_of_players; i++) {
+    do {
+
+        cout << "How many Players are playing must be between 2 to 5 players and must be a number: ";
+        getline(cin, number_of_players);
         
-        cout << "Enter Player " << i + 1 << " full name: ";
-        cin >> players[i].firstname >> players[i].lastname;
+        validated_amount_of_players_choosen = (number_of_players[0] <= 49) || (number_of_players[0] > 53)
+        || (number_of_players.length() != 1);
         
-        players[i].firstname = standardize_names(players[i].firstname);
-        players[i].lastname = standardize_names(players[i].lastname);
+        if (validated_amount_of_players_choosen) {
+            cout << "Invalid Input" << endl;
+        }
+        
+    }  while(validated_amount_of_players_choosen);
+
+    
+    
+    int amount_of_players_playing = stoi(number_of_players);
+    
+    for (int i = 0; i < amount_of_players_playing; i++) {
+        
+        string user_entered_name;
+        bool validated_name;
+        
+        do {
+            
+            cout << "Enter Player " << i + 1 << " full name: ";
+            getline(cin, user_entered_name);
+            validated_name = validate_name(user_entered_name);
+            
+            
+            if (!validated_name) {
+                cout << "Invalid Input" << endl;
+            }
+            
+        } while (!validated_name);
+        
+        standardize_names(players[i], user_entered_name);
         players[i].piece = 'a' + i;
        
         
     }
-    return number_of_players;
+    
+    return amount_of_players_playing;
 }
 
 //============================================================================================
 // This function Standardizes names by making the first name capitalized capital and the follwing lowercased.
 //============================================================================================
 
-string standardize_names(string name) {
+void standardize_names(Player &player, string user_entered_name) {
     
-    name[0] = toupper(name[0]);
+    int spaces = 0;
     
-    for (int i = 1; i < name.length(); i++) {
-        name[i] = tolower(name[i]);
+    for (int i = 1; i < user_entered_name.length(); i++) {
+        
+        if (i == 0) {
+            player.firstname[0] = toupper(user_entered_name[i]);
+        }
+        
+        else if (user_entered_name[i] == ' ') {
+            
+            spaces += 1;
+            player.lastname[0] = toupper(user_entered_name[i + 1]);
+            i += 1;
+            
+        }
+        
+        else if (spaces == 1) {
+            
+            player.lastname += tolower(user_entered_name[i]);
+            
+        }
+        
+        else {
+            
+            player.firstname += user_entered_name[i];
+            
+        }
     }
-    return name;
 }
 
 //==================================
@@ -234,3 +334,29 @@ string set_display_space(Player player[5], int amount_of_players, int current_pl
         return empty_string;
     
 }
+
+bool validate_name(string full_name) {
+    int spaces = 0;
+    
+    for (int i = 0; i < full_name.length(); i++) {
+        
+        char valdiating_char = toupper(full_name[i]);
+        
+        if (valdiating_char == ' ') {
+            spaces += 1;
+            
+            if (spaces > 1) {
+                return false;
+            }
+        }
+        
+        else if (int(valdiating_char) < 65 || int(valdiating_char) > 90) {
+            
+            return false;
+        }
+    }
+    
+        return full_name[full_name.length() - 1] != ' ' && spaces == 1;
+}
+
+

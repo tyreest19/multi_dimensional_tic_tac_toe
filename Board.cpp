@@ -33,30 +33,9 @@ void Board:: generate_board() {
 // Allows user to edit the board.
 //============================================================================================
 
-bool Board:: edit_board(string user_input,char players_piece) {
-    int row;
-    int column;
-    if (user_input.length() == 2) {
-        row = user_input[0] - 65;
-        column = user_input[1] - '0';
-        column -= 1;
-        if(check_avaiblity(row, column)) {
-           board[row][column] = players_piece;
-           return true;
-        }
-    }
-    else {
-        string temp = user_input.substr(user_input.length() - 2);
-        row = user_input[0] - 65;
-        column = stoi(temp);
-        column -= 1;
-        if(check_avaiblity(row, column) == true){
-            board[row][column] = players_piece;
-            return true;
-        }
-    }
-    return false;
-};
+void Board:: edit_board(int row, int column, char players_piece) {
+        board[row][column] = players_piece;
+}
 
 //============================================================================================
 // Displays the board.
@@ -269,10 +248,5 @@ bool Board:: search_for_tie_game(int turns_completed) {
 }
 
 bool Board:: check_avaiblity(int row, int column) {
-    
-    if (board[row][column] == ' ')
-        
-        return true;
-    
-    return false;
+    return board[row][column] == ' ';
 }

@@ -17,15 +17,15 @@ class Board {
     
 public:
     Board(int rows, int columns);
-    bool edit_board(string user_input,char player_piece);
+    void edit_board(int row, int column, char players_piece);
     void display_board();
     bool search_for_win(char piece);
     bool search_for_tie_game(int turns_completed);
-    
+    bool check_avaiblity(int row, int column);
+
 private:
     int rows;
     int columns;
-    bool check_avaiblity(int row, int column);
     char board[13][16];
     void generate_board();
     bool search_for_diagonal_win(char piece);
