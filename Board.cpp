@@ -43,6 +43,7 @@ void Board:: edit_board(int row, int column, char players_piece) {
 
 void Board:: display_board() {
     int amount_of_interations = rows;
+    cout << " im in display board" << endl;
     do {
         if (rows - amount_of_interations == 0) {
             for (int i = 0; i < columns; i++) {

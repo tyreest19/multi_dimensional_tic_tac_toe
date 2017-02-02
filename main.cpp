@@ -28,6 +28,7 @@ struct Player {
 };
 
 bool validate_name(string full_name);
+void get_board_dimesions(int &rows, int &columns);
 void get_player_move(Board board, string firstname, char piece);
 int get_players(Player players[5]);
 void play_game(Player players[5], int number_of_players, int &draws);
@@ -38,13 +39,17 @@ void standardize_names(Player &player, string user_entered_name);
 
 using namespace std;
 int main(int argc, const char * argv[]) {
-    Player players[5];
-    int number_of_players = get_players(players);
-    int draws = 0;
-    play_game(players, number_of_players, draws);
-    int total_games_played;
-    display_stats(players, number_of_players, draws, total_games_played);
-    
+//    Player players[5];
+//    int number_of_players = get_players(players);
+//    int draws = 0;
+//    play_game(players, number_of_players, draws);
+//    int total_games_played;
+//    display_stats(players, number_of_players, draws, total_games_played);
+    int rows;
+    int columns;
+    get_board_dimesions(rows, columns);
+    Board board(rows, columns);
+    board.display_board();
     return 0;
 }
 
@@ -56,41 +61,21 @@ int main(int argc, const char * argv[]) {
 
 void play_game(Player players[5], int number_of_players, int &draws) {
     
-    string rows;
-    string columns;
-    int numeric_value_of_rows;
-    int numeric_value_of_columns;
+    int rows;
+    int columns;
     int amount_of_turns = 0;
     int player_turn = 0;
     bool game_won = false;
     
-    do {
-        
-        cout << "Enter amount of rows for the board: ";
-        getline(cin, rows);
-        cout << "Enter amount of columns for the board: ";
-        getline(cin, columns);
-        
-        int numeric_value_of_rows = stoi(rows);
-        int numeric_value_of_columns = stoi(columns);
-
-
-        if (numeric_value_of_rows < 3 || numeric_value_of_columns < 3) {
-            
-            cout << "Invalid Input" << endl;
-            
-        }
-        
-    } while (numeric_value_of_rows < 3 || numeric_value_of_columns < 3);
-
+    get_board_dimesions(rows, columns);
+    Board board(rows, columns);
     
-    Board board(numeric_value_of_rows, numeric_value_of_columns);
-    
-    while (player_turn <= (numeric_value_of_columns * numeric_value_of_columns) && !game_won) {
-        cout << "amout of turns: " << amount_of_turns << endl;
+    while (player_turn <= (rows * columns) && !game_won) {
         
         Player current_player = players[amount_of_turns];
+        cout << "display board caused this error" << endl;
         board.display_board();
+        cout << "after display board" << endl;
         get_player_move(board, players[amount_of_turns].firstname, current_player.piece);
         
         if (board.search_for_win(current_player.piece)) {
@@ -195,8 +180,6 @@ int get_players(Player players[]) {
         }
         
     }  while(validated_amount_of_players_choosen);
-
-    
     
     int amount_of_players_playing = stoi(number_of_players);
     
@@ -359,4 +342,35 @@ bool validate_name(string full_name) {
         return full_name[full_name.length() - 1] != ' ' && spaces == 1;
 }
 
-
+void get_board_dimesions(int &rows, int &columns) {
+    
+    string user_generated_dimesions;
+    bool validate_dimesions = true;
+    
+    do {
+        
+        cout << "Enter amount of rows by columns for the board: ";
+        getline(cin, user_generated_dimesions);
+        
+        if (user_generated_dimesions.length() > 5) {
+            cout << "Invalid input" << endl;
+        }
+        
+        else {
+            int counter = 0;
+            
+            while (validate_dimesions && counter < user_generated_dimesions.length()) {
+                
+                if (user_generated_dimesions[counter] < 49 && user_generated_dimesions[counter] > 57) {
+                    
+                    validate_dimesions = false;
+                    
+                }
+            }
+        }
+    
+    } while (!validate_dimesions);
+    
+    //rows =  stoi(user_genrated_row);
+    //columns = stoi(user_genrated_column);
+}
