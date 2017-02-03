@@ -29,7 +29,7 @@ struct Player {
 
 bool validate_name(string full_name);
 void get_board_dimesions(int &rows, int &columns);
-void get_player_move(Board board, string firstname, char piece);
+void get_player_move(Board &board, string firstname, char piece);
 int get_players(Player players[5]);
 void play_game(Player players[5], int number_of_players, int &draws);
 void update_loses(Player player[5], int winning_index, int amount_players);
@@ -39,17 +39,13 @@ void standardize_names(Player &player, string user_entered_name);
 
 using namespace std;
 int main(int argc, const char * argv[]) {
-//    Player players[5];
-//    int number_of_players = get_players(players);
-//    int draws = 0;
-//    play_game(players, number_of_players, draws);
-//    int total_games_played;
-//    display_stats(players, number_of_players, draws, total_games_played);
-    int rows;
-    int columns;
-    get_board_dimesions(rows, columns);
-    Board board(rows, columns);
-    board.display_board();
+    
+    Player players[5];
+    int number_of_players = get_players(players);
+    int draws = 0;
+    play_game(players, number_of_players, draws);
+    int total_games_played;
+    display_stats(players, number_of_players, draws, total_games_played);
     return 0;
 }
 
@@ -73,15 +69,12 @@ void play_game(Player players[5], int number_of_players, int &draws) {
     while (player_turn <= (rows * columns) && !game_won) {
         
         Player current_player = players[amount_of_turns];
-        cout << "display board caused this error" << endl;
         board.display_board();
-        cout << "after display board" << endl;
         get_player_move(board, players[amount_of_turns].firstname, current_player.piece);
         
         if (board.search_for_win(current_player.piece)) {
             
             board.display_board();
-
             cout << "Congrats " << current_player.firstname << ", you won"<< endl;
             
             current_player.wins += 1;
@@ -115,44 +108,75 @@ void play_game(Player players[5], int number_of_players, int &draws) {
     
 }
 
-void get_player_move(Board board, string firstname, char piece) {
+void get_player_move(Board &board, string firstname, char piece) {
     
-    bool is_space_available;
     string move;
-    int row;
-    int column;
+    int rows;
+    int columns;
+    bool valid_move;
+    int counter;
     
-    do {
-        
-        cout << endl << firstname <<", enter the number on the board where you want to move: ";
-        getline(cin,move);
-        row = move[0] - 65;
-        
-        if (move.length() == 2) {
-            
-            column = int(move[1]);
-            
-        }
-        
-        else {
-            
-            string temporary_column = move.substr(move.length() - 2);
-            column = stoi(temporary_column);
-            
-        }
-        
-        column -= 1;
-        is_space_available = board.check_avaiblity(row, column);
-        
-        if (!is_space_available) {
-            
-            cout << "Space has been taken please choose a new move" << endl;
-            
-        }
-        
-    } while(!is_space_available);
+     do {
+         
+         rows = 0;
+         columns = 0;
+         counter = 0;
+         valid_move = true;
+         string temporary_columns = "";
+         
+         cout << endl << firstname << ", enter the number on the board where you want to move: ";
+         getline(cin,move);
+         
+         if (move.length() < 2 || move.length() > 3) {
+             
+             cout << "invalid input";
+             valid_move = false;
+             
+         }
+         
+         else {
+             
+             if(!(int(move[0]) >= 65 && int(move[0]) <= 77)) {
+                 cout << "Invalid Input" << endl;
+                 valid_move = false;
+             }
+             
+             while (valid_move && counter < move.length()) {
+                 
+                 if (counter == 0) {
+                     rows += (move[0] - 65);
+                 }
 
-    board.edit_board(row, column, piece);
+                 else if(!(int(move[counter]) >= 65 && int(move[counter]) <= 77)){
+                    
+                     if(!(int(move[counter]) >= 49 && int(move[counter]) <= 59)) {
+                     
+                     cout << "invalid input" << endl;
+                     valid_move = false;
+                    }
+                     
+                     else {
+                         
+                         temporary_columns += move[counter];
+                         
+                     }
+                 }
+                 
+                 counter += 1;
+             }
+             
+             if (valid_move) {
+                 columns += stoi(temporary_columns) - 1;
+                 valid_move = (board.check_avaiblity(rows, columns)) && (board.check_bounds(rows, columns));
+                 if (columns + 1 > board.check_columns_size() && !valid_move) {
+                     cout << "Invalid input" << endl;
+                     valid_move = false;
+                 }
+                  }
+             }
+     }while(!valid_move);
+    
+    board.edit_board(rows, columns, piece);
     
 }
 
@@ -217,14 +241,10 @@ int get_players(Player players[]) {
 void standardize_names(Player &player, string user_entered_name) {
     
     int spaces = 0;
-    
+    player.firstname[0] = toupper(user_entered_name[0]);
     for (int i = 1; i < user_entered_name.length(); i++) {
         
-        if (i == 0) {
-            player.firstname[0] = toupper(user_entered_name[i]);
-        }
-        
-        else if (user_entered_name[i] == ' ') {
+        if (user_entered_name[i] == ' ') {
             
             spaces += 1;
             player.lastname[0] = toupper(user_entered_name[i + 1]);
@@ -283,7 +303,6 @@ void display_stats(Player player[5], int amount_of_players, int draws, int total
         }
         
         string spaces = set_display_space(player, amount_of_players, length_of_current_name);
-        // int spaces_length = int(player[i].firstname.length() + player[i].lastname.length());
         cout << player[i].firstname << " " << player[i].lastname << spaces;
         cout << "|  " << player[i].wins;
         cout << "   |  " << player[i].loses;
@@ -342,35 +361,81 @@ bool validate_name(string full_name) {
         return full_name[full_name.length() - 1] != ' ' && spaces == 1;
 }
 
+//======================================================================================
+// Gets boards dimesions and stores them into a rows and columns reference variable.
+// also validates the input.
+//======================================================================================
+
 void get_board_dimesions(int &rows, int &columns) {
     
     string user_generated_dimesions;
-    bool validate_dimesions = true;
+    string temp;
+    bool valid_input;
     
     do {
         
+        int counter = 0;
+        valid_input = true;
+        temp = "";
+        rows = 0;
+        columns = 0;
+
+        
         cout << "Enter amount of rows by columns for the board: ";
         getline(cin, user_generated_dimesions);
+    
+    if (user_generated_dimesions[0] == ' ' || user_generated_dimesions.length() > 5 ||
+            user_generated_dimesions[user_generated_dimesions.length() - 1] == ' ') {
         
-        if (user_generated_dimesions.length() > 5) {
-            cout << "Invalid input" << endl;
-        }
+        cout << "Invalid input " << endl;
+        valid_input = false;
         
-        else {
-            int counter = 0;
+    }
+    
+    else {
+        user_generated_dimesions += " ";
+        while (valid_input && counter < user_generated_dimesions.length()) {
+
+        if (user_generated_dimesions[counter] == ' ') {
+        
             
-            while (validate_dimesions && counter < user_generated_dimesions.length()) {
+            if (!rows) {
                 
-                if (user_generated_dimesions[counter] < 49 && user_generated_dimesions[counter] > 57) {
-                    
-                    validate_dimesions = false;
-                    
-                }
+                rows = stoi(temp);
+                
             }
+            
+            else {
+                
+                columns = stoi(temp);
+                
+            }
+            
+            temp = "";
         }
+        
+        else if (int(user_generated_dimesions[counter]) >= 49 &&
+                 int(user_generated_dimesions[counter]) <= 57  ){
+            temp += user_generated_dimesions[counter];
+            
+        }
+            
+        else {
+            valid_input = false;
+        }
+            
+        counter += 1;
+            
+        }
+        
+        if (!((rows >= 3 && rows <= 13)  && (columns >= 3 && columns <= 16))) {
+            
+            cout << "invalid input" << endl;
+            valid_input = false;
+            
+        }
+    }
     
-    } while (!validate_dimesions);
-    
-    //rows =  stoi(user_genrated_row);
-    //columns = stoi(user_genrated_column);
+        
+    }while(!valid_input);
 }

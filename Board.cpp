@@ -43,7 +43,7 @@ void Board:: edit_board(int row, int column, char players_piece) {
 
 void Board:: display_board() {
     int amount_of_interations = rows;
-    cout << " im in display board" << endl;
+
     do {
         if (rows - amount_of_interations == 0) {
             for (int i = 0; i < columns; i++) {
@@ -250,4 +250,11 @@ bool Board:: search_for_tie_game(int turns_completed) {
 
 bool Board:: check_avaiblity(int row, int column) {
     return board[row][column] == ' ';
+}
+
+bool Board:: check_bounds(int user_enter_row, int user_enter_column) {
+    return (rows >= user_enter_row) && (columns >= user_enter_column);
+}
+int Board:: check_columns_size() {
+    return columns;
 }
