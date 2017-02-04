@@ -43,8 +43,8 @@ int main(int argc, const char * argv[]) {
     int number_of_players = get_players(players);
 //    decide_next_player(players, number_of_players,1);
     int draws = 0;
-    play_game(players, number_of_players, draws);
-    int total_games_played;
+//    play_game(players, number_of_players, draws);
+    int total_games_played = 0;
     display_stats(players, number_of_players, draws, total_games_played);
     return 0;
 }
@@ -249,12 +249,13 @@ void standardize_names(Player &player, string user_entered_name) {
         if (user_entered_name[i] == ' ') {
             
             spaces += 1;
-            player.lastname[0] = toupper(user_entered_name[i + 1]);
+            player.lastname += user_entered_name[i];
+            player.lastname += toupper(user_entered_name[i + 1]);
             i += 1;
             
         }
         
-        else if (spaces == 1) {
+        else if (spaces >= 1) {
             
             player.lastname += tolower(user_entered_name[i]);
             
@@ -266,6 +267,7 @@ void standardize_names(Player &player, string user_entered_name) {
             
         }
     }
+    player.lastname.erase(0,1);
 }
 
 //==================================
@@ -294,7 +296,7 @@ void display_stats(Player player[5], int amount_of_players, int draws, int total
     string spaces = set_display_space(player, amount_of_players, 0);
     cout <<"Total game played = " << total_games_played << endl << endl;
     cout << spaces <<"  WIN   LOSS   DRAWS    " << endl;
-    cout << spaces <<" --------------------" << endl;
+    cout << spaces <<"  ------ ----- ---- " << endl;
     
     for (int i = 0; i < amount_of_players; i++) {
         
@@ -305,12 +307,12 @@ void display_stats(Player player[5], int amount_of_players, int draws, int total
         }
         
         string spaces = set_display_space(player, amount_of_players, length_of_current_name);
-        cout << player[i].firstname << " " << player[i].lastname << spaces;
+        cout << player[i].firstname <<player[i].lastname << ' ' << spaces;
         cout << "|  " << player[i].wins;
         cout << "   |  " << player[i].loses;
-        cout << "   |  " << draws << " |" << endl;
+        cout << "  |  " << draws << " |" << endl;
         spaces = set_display_space(player, amount_of_players, 0);
-        cout << spaces << " --------------------" << endl;
+        cout << spaces << "  ------ ----- ---- " << endl;
     }
 }
 
