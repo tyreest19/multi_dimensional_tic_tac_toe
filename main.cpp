@@ -6,8 +6,6 @@
 //  Copyright © 2017 Tyree Stevenson. All rights reserved.
 //
 //TODO {
-//    3. SHOW PLAYER STATS.
-//    4. INPUT VALADATION.
 //    5. who comes next after game conclusion.
 //    6. ALLOW USER TO END OR CONTINUE GAME.
 //    7. DOCUMENTATION.
@@ -31,6 +29,7 @@ bool validate_name(string full_name);
 void get_board_dimesions(int &rows, int &columns);
 void get_player_move(Board &board, string firstname, char piece);
 int get_players(Player players[5]);
+void decide_next_player(Player players[], int number_of_players, int winning_player_index);
 void play_game(Player players[5], int number_of_players, int &draws);
 void update_loses(Player player[5], int winning_index, int amount_players);
 void display_stats(Player player[5], int amount_of_players, int draws, int total_games_played);
@@ -42,6 +41,7 @@ int main(int argc, const char * argv[]) {
     
     Player players[5];
     int number_of_players = get_players(players);
+//    decide_next_player(players, number_of_players,1);
     int draws = 0;
     play_game(players, number_of_players, draws);
     int total_games_played;
@@ -75,7 +75,7 @@ void play_game(Player players[5], int number_of_players, int &draws) {
         if (board.search_for_win(current_player.piece)) {
             
             board.display_board();
-            cout << "Congrats " << current_player.firstname << ", you won"<< endl;
+            cout << endl << "Congrats " << current_player.firstname << ", you won"<< endl;
             
             current_player.wins += 1;
             game_won = true;
@@ -126,6 +126,7 @@ void get_player_move(Board &board, string firstname, char piece) {
          
          cout << endl << firstname << ", enter the number on the board where you want to move: ";
          getline(cin,move);
+         move[0] = toupper(move[0]);
          
          if (move.length() < 2 || move.length() > 3) {
              
@@ -137,7 +138,7 @@ void get_player_move(Board &board, string firstname, char piece) {
          else {
              
              if(!(int(move[0]) >= 65 && int(move[0]) <= 77)) {
-                 cout << "Invalid Input" << endl;
+                 cout << "Invalid Input";
                  valid_move = false;
              }
              
@@ -151,8 +152,9 @@ void get_player_move(Board &board, string firstname, char piece) {
                     
                      if(!(int(move[counter]) >= 49 && int(move[counter]) <= 59)) {
                      
-                     cout << "invalid input" << endl;
+                     cout << "invalid input";
                      valid_move = false;
+                         
                     }
                      
                      else {
@@ -168,10 +170,10 @@ void get_player_move(Board &board, string firstname, char piece) {
              if (valid_move) {
                  columns += stoi(temporary_columns) - 1;
                  valid_move = (board.check_avaiblity(rows, columns)) && (board.check_bounds(rows, columns));
-                 if (columns + 1 > board.check_columns_size() && !valid_move) {
-                     cout << "Invalid input" << endl;
+                 if (columns + 1 > board.check_columns_size() || !valid_move) {
+                     cout << "Invalid input" ;
                      valid_move = false;
-                 }
+                    }
                   }
              }
      }while(!valid_move);
@@ -338,27 +340,19 @@ string set_display_space(Player player[5], int amount_of_players, int current_pl
 }
 
 bool validate_name(string full_name) {
-    int spaces = 0;
     
     for (int i = 0; i < full_name.length(); i++) {
-        
+    
         char valdiating_char = toupper(full_name[i]);
         
-        if (valdiating_char == ' ') {
-            spaces += 1;
-            
-            if (spaces > 1) {
-                return false;
-            }
-        }
         
-        else if (int(valdiating_char) < 65 || int(valdiating_char) > 90) {
+        if ((int(valdiating_char) < 65 || int(valdiating_char) > 90) && valdiating_char != ' ') {
             
             return false;
         }
     }
     
-        return full_name[full_name.length() - 1] != ' ' && spaces == 1;
+        return full_name[full_name.length() - 1] != ' ';
 }
 
 //======================================================================================
@@ -379,18 +373,32 @@ void get_board_dimesions(int &rows, int &columns) {
         temp = "";
         rows = 0;
         columns = 0;
+        string user_generated_rows;
+        string user_generted_columns;
 
         
-        cout << "Enter amount of rows by columns for the board: ";
-        getline(cin, user_generated_dimesions);
+        cout << "Enter amount of rows: ";
+        getline(cin, user_generated_rows);
+        cout << "Enter amount of columns: ";
+        getline(cin, user_generted_columns);
+        user_generated_dimesions = user_generated_rows + " " + user_generted_columns;
     
-    if (user_generated_dimesions[0] == ' ' || user_generated_dimesions.length() > 5 ||
-            user_generated_dimesions[user_generated_dimesions.length() - 1] == ' ') {
+        if (user_generated_rows.length() > 3 || user_generted_columns.length() > 3 ||
+            user_generated_rows[1] == ' ' || user_generted_columns[1] == ' ') {
+            
+            cout << "Invalid input " << endl;
+            valid_input = false;
+            
+        }
         
-        cout << "Invalid input " << endl;
-        valid_input = false;
+        else if (user_generated_dimesions[0] == ' ' || user_generated_dimesions.length() > 5 ||
+                 user_generated_dimesions[user_generated_dimesions.length() - 1] == ' ') {
         
-    }
+                cout << "Invalid input " << endl;
+                valid_input = false;
+        
+        }
+        
     
     else {
         user_generated_dimesions += " ";
@@ -438,4 +446,18 @@ void get_board_dimesions(int &rows, int &columns) {
     
         
     }while(!valid_input);
+}
+
+void decide_next_player(Player players[], int number_of_players, int winning_player_index) {
+    for (int i = 0; i < number_of_players; i++) {
+        for (int j = 0; j < number_of_players - 1; j++) {
+            Player swap_variable;
+            if (players[j].firstname != "" && players[j + 1].firstname != "") {
+                swap_variable = players[i];
+                players[i] = players[j + 1];
+                players[j + 1] = swap_variable;
+            }
+            
+        }
+    }
 }
