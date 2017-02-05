@@ -29,8 +29,8 @@ bool validate_name(string full_name);
 void get_board_dimesions(int &rows, int &columns);
 void get_player_move(Board &board, string firstname, char piece);
 int get_players(Player players[5]);
-void decide_next_player(Player players[], int number_of_players, int winning_player_index);
-void play_game(Player players[5], int number_of_players, int &draws);
+int get_next_game_starter(int next_player, int amount_of_turns, int number_of_players);
+void play_game(Player players[5], int number_of_players, int &draws, int &next_player);
 void update_loses(Player player[5], int winning_index, int amount_players);
 void display_stats(Player player[5], int amount_of_players, int draws, int total_games_played);
 string set_display_space(Player player[5], int amount_of_players, int current_player_name_length);
@@ -41,11 +41,17 @@ int main(int argc, const char * argv[]) {
     
     Player players[5];
     int number_of_players = get_players(players);
-//    decide_next_player(players, number_of_players,1);
     int draws = 0;
-//    play_game(players, number_of_players, draws);
     int total_games_played = 0;
-    display_stats(players, number_of_players, draws, total_games_played);
+    int index_of_next_player = 0;
+    
+    do {
+        play_game(players, number_of_players, draws, index_of_next_player);
+        total_games_played += 1;
+        cout << "index of player: " << index_of_next_player << endl;
+        display_stats(players, number_of_players, draws, total_games_played);
+        
+    } while (true);
     return 0;
 }
 
@@ -55,30 +61,31 @@ int main(int argc, const char * argv[]) {
 // Then allows the players to play a tic-tac_toe game which displays, updates, and checks for win/draw after every // move
 //============================================================================================
 
-void play_game(Player players[5], int number_of_players, int &draws) {
+void play_game(Player players[5], int number_of_players, int &draws, int &next_player) {
     
     int rows;
     int columns;
-    int amount_of_turns = 0;
+    int amount_of_turns = next_player;
     int player_turn = 0;
     bool game_won = false;
     
     get_board_dimesions(rows, columns);
     Board board(rows, columns);
     
-    while (player_turn <= (rows * columns) && !game_won) {
+    while (player_turn != (rows * columns) && !game_won) {
         
-        Player current_player = players[amount_of_turns];
         board.display_board();
-        get_player_move(board, players[amount_of_turns].firstname, current_player.piece);
+        get_player_move(board, players[amount_of_turns].firstname, players[amount_of_turns].piece);
         
-        if (board.search_for_win(current_player.piece)) {
+        if (board.search_for_win(players[amount_of_turns].piece)) {
             
             board.display_board();
-            cout << endl << "Congrats " << current_player.firstname << ", you won"<< endl;
             
-            current_player.wins += 1;
+            cout << endl << "Congrats " << players[amount_of_turns].firstname << ", you won"<< endl;
+            
+            players[amount_of_turns].wins += 1;
             game_won = true;
+            next_player = get_next_game_starter(next_player, amount_of_turns, number_of_players);
             update_loses(players, amount_of_turns, number_of_players);
             
         }
@@ -101,7 +108,7 @@ void play_game(Player players[5], int number_of_players, int &draws) {
         
         board.display_board();
         draws += 1;
-        
+        next_player = get_next_game_starter(next_player, amount_of_turns, number_of_players);
         cout << "The game ended in a draw" << endl;
         
     }
@@ -224,10 +231,14 @@ int get_players(Player players[]) {
             if (!validated_name) {
                 cout << "Invalid Input" << endl;
             }
-            
+        
+            else {
+                
+                standardize_names(players[i], user_entered_name);
+                validated_name = players[i].lastname != " " && players[i].firstname != " ";
+            }
         } while (!validated_name);
         
-        standardize_names(players[i], user_entered_name);
         players[i].piece = 'a' + i;
        
         
@@ -295,7 +306,7 @@ void display_stats(Player player[5], int amount_of_players, int draws, int total
     
     string spaces = set_display_space(player, amount_of_players, 0);
     cout <<"Total game played = " << total_games_played << endl << endl;
-    cout << spaces <<"  WIN   LOSS   DRAWS    " << endl;
+    cout << spaces <<"   WIN   LOSS  DRAWS    " << endl;
     cout << spaces <<"  ------ ----- ---- " << endl;
     
     for (int i = 0; i < amount_of_players; i++) {
@@ -450,16 +461,15 @@ void get_board_dimesions(int &rows, int &columns) {
     }while(!valid_input);
 }
 
-void decide_next_player(Player players[], int number_of_players, int winning_player_index) {
-    for (int i = 0; i < number_of_players; i++) {
-        for (int j = 0; j < number_of_players - 1; j++) {
-            Player swap_variable;
-            if (players[j].firstname != "" && players[j + 1].firstname != "") {
-                swap_variable = players[i];
-                players[i] = players[j + 1];
-                players[j + 1] = swap_variable;
-            }
-            
-        }
+int get_next_game_starter(int next_player, int amount_of_turns, int number_of_players) {
+    next_player = amount_of_turns + 1;
+    if (next_player >= number_of_players) {
+        next_player = 0;
     }
+    return next_player;
 }
+
+
+
+
+
