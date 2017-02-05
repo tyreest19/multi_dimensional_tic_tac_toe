@@ -235,7 +235,12 @@ int get_players(Player players[]) {
             else {
                 
                 standardize_names(players[i], user_entered_name);
-                validated_name = players[i].lastname != " " && players[i].firstname != " ";
+                validated_name = !(players[i].lastname != " ") || !players[i].lastname.empty();
+                
+                if (!validated_name) {
+                    cout << "Invalid Input" << endl;
+                }
+                
             }
         } while (!validated_name);
         
@@ -414,6 +419,7 @@ void get_board_dimesions(int &rows, int &columns) {
         
     
     else {
+        
         user_generated_dimesions += " ";
         while (valid_input && counter < user_generated_dimesions.length()) {
 
