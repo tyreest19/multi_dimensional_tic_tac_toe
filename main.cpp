@@ -44,14 +44,23 @@ int main(int argc, const char * argv[]) {
     int draws = 0;
     int total_games_played = 0;
     int index_of_next_player = 0;
-    
+    string user_choice;
     do {
+        user_choice = " ";
+        
         play_game(players, number_of_players, draws, index_of_next_player);
         total_games_played += 1;
-        cout << "index of player: " << index_of_next_player << endl;
         display_stats(players, number_of_players, draws, total_games_played);
         
-    } while (true);
+        while (user_choice != "y" && user_choice != "n") {
+           
+            cout << "If you wish to continue enter y and if you want to quit enter n: ";
+            getline(cin, user_choice);
+            
+
+        }
+        
+    } while (user_choice == "y");
     return 0;
 }
 
@@ -310,6 +319,7 @@ void update_loses(Player player[5], int winning_index, int amount_players) {
 void display_stats(Player player[5], int amount_of_players, int draws, int total_games_played) {
     
     string spaces = set_display_space(player, amount_of_players, 0);
+    cout << endl;
     cout <<"Total game played = " << total_games_played << endl << endl;
     cout << spaces <<"   WIN   LOSS  DRAWS    " << endl;
     cout << spaces <<"  ------ ----- ---- " << endl;
