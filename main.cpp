@@ -76,6 +76,7 @@ void play_game(Player players[5], int number_of_players, int &draws, int &next_p
     int columns;
     int amount_of_turns = next_player;
     int player_turn = 0;
+    int starting_player = next_player;
     bool game_won = false;
     
     get_board_dimesions(rows, columns);
@@ -117,7 +118,7 @@ void play_game(Player players[5], int number_of_players, int &draws, int &next_p
         
         board.display_board();
         draws += 1;
-        next_player = get_next_game_starter(next_player, amount_of_turns, number_of_players);
+        next_player = get_next_game_starter(starting_player, amount_of_turns, number_of_players);
         cout << "The game ended in a draw" << endl;
         
     }
