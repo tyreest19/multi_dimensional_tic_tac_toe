@@ -27,6 +27,7 @@ public:
     int check_columns_size();
 
 private:
+    
     int rows;
     int columns;
     char board[13][16];
@@ -34,6 +35,7 @@ private:
     bool search_for_diagonal_win(char piece);
     bool search_for_horizontal_win(char piece);
     bool search_for_vertical_win(char piece);
+    
 };
     
 

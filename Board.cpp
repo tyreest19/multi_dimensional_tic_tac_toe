@@ -16,15 +16,21 @@
 using namespace std;
 
 Board::Board(int user_choosen_rows, int user_choosen_columns) {
+    
     rows = user_choosen_rows;
     columns = user_choosen_columns;
     generate_board();
+    
 }
 
 void Board:: generate_board() {
+    
     for (int i = 0; i < 13; i++) {
+        
         for (int j = 0; j < 16; j++) {
+            
             board[i][j] = ' ';
+            
         }
     }
 }
@@ -34,7 +40,9 @@ void Board:: generate_board() {
 //============================================================================================
 
 void Board:: edit_board(int row, int column, char players_piece) {
+    
         board[row][column] = players_piece;
+    
 }
 
 //============================================================================================
@@ -42,38 +50,63 @@ void Board:: edit_board(int row, int column, char players_piece) {
 //============================================================================================
 
 void Board:: display_board() {
+    
     int amount_of_interations = rows;
 
     do {
+        
         if (rows - amount_of_interations == 0) {
+            
             for (int i = 0; i < columns; i++) {
+                
                 if(i + 1 == 1) {
+                    
                     cout <<"    "<< i + 1;
+                    
                 }
+                
                 else if (i  + 1 < 9) {
+                    
                     cout <<"   "<< i + 1;
+                    
                 }
+                
                 else  if( i + 1 == 9) {
+                    
                     cout << "   "<<i + 1;
+                    
                 }
+                
                 else if(i + 1 == 10) {
+                    
                     cout << "   " << i + 1;
+                    
                 }
+                
                  else {
+                     
                     cout << "  " << i + 1;
+                     
                 }
             }
         }
+        
         cout << endl;
         
         for (int i = 0; i < columns; i++) {
+            
             if (i == 0) {
+                
                 cout << "   ---";
             }
+            
             else if (i % 2 != 0) {
+                
                 cout << " --- ";
             }
+            
             else {
+                
                 cout << "---";
             }
         }
@@ -81,50 +114,78 @@ void Board:: display_board() {
         cout << endl << char('A' + (rows - amount_of_interations)) << " ";
         
         for (int j = 0; j < columns; j++) {
+            
             cout << "|  "<< board[rows - amount_of_interations][j];
+            
         }
         
         cout << "| "<<char('A' + (rows - amount_of_interations));
 
-        
         if (amount_of_interations - 1 == 0) {
+            
             cout << endl;
-                for (int i = 0; i < columns; i++) {
+            
+            for (int i = 0; i < columns; i++) {
+                   
                     if (i == 0) {
+                        
                         cout << "   ---";
+                        
                     }
+                    
                     else if (i % 2 != 0) {
+                        
                         cout << " --- ";
+                        
                     }
+                    
                     else {
+                        
                         cout << "---";
+                        
                     }
                 }
             
                 if (amount_of_interations - 1 == 0) {
+                    
                     cout << endl;
                     
                     for (int i = 0; i < columns; i++) {
+                        
                         if(i + 1 == 1) {
+                            
                             cout <<"    "<< i + 1;
+                            
                         }
+                        
                         else if (i  + 1 < 9) {
+                            
                             cout <<"   "<< i + 1;
+                            
                         }
+                        
                         else  if( i + 1 == 9) {
+                            
                             cout << "   "<<i + 1;
+                            
                         }
                         else if(i + 1 == 10) {
+                            
                             cout << "   " << i + 1;
+                            
                         }
+                        
                         else {
+                            
                             cout << "  " << i + 1;
+                            
                         }
                     }
                     
                 }
             }
         amount_of_interations -= 1;
+        
     }while (amount_of_interations);
 };
 
@@ -155,6 +216,7 @@ bool Board:: search_for_win(char piece) {
 //============================================================================================
 
 bool Board:: search_for_diagonal_win(char piece) {
+    
     for (int i = 0; i < rows; i++) {
         
         for (int j = 0; j < columns; j++) {
@@ -168,7 +230,9 @@ bool Board:: search_for_diagonal_win(char piece) {
                         board[i + 2][j + 2] = toupper(piece);
                         board[i + 1][j + 1] = toupper(piece);
                         board[i][j] =  toupper(piece);
+                        
                         cout << "DIAGONAL WIN FOUND" <<endl;
+                        
                         return true;
                   
                     }
@@ -178,7 +242,9 @@ bool Board:: search_for_diagonal_win(char piece) {
                         board[i + 2][j - 2] = toupper(piece);
                         board[i + 1][j - 1] = toupper(piece);
                         board[i][j] = toupper(piece);
+                        
                         cout << "DIAGONAL WIN FOUND" <<endl;
+                        
                         return true;
                         
                     }
@@ -205,6 +271,7 @@ bool Board:: search_for_horizontal_win(char piece) {
                     board[i][j + 1] = toupper(piece);
                     board[i][j] = toupper(piece);
                     cout << endl;
+                
                     return true;
                 
                 }
@@ -230,8 +297,8 @@ bool Board:: search_for_vertical_win(char piece) {
                 board[i + 1][j] = toupper(piece);
                 board[i + 2][j] = toupper(piece);
                 cout << endl;
-                return true;
                 
+                return true;
             }
         }
     }
@@ -246,15 +313,23 @@ bool Board:: search_for_vertical_win(char piece) {
 bool Board:: search_for_tie_game(int turns_completed) {
     
     return turns_completed == rows * columns;
+    
 }
 
 bool Board:: check_avaiblity(int row, int column) {
+    
     return board[row][column] == ' ';
+    
 }
 
 bool Board:: check_bounds(int user_enter_row, int user_enter_column) {
+    
     return (rows >= user_enter_row) && (columns >= user_enter_column);
+    
 }
+
 int Board:: check_columns_size() {
+    
     return columns;
+    
 }

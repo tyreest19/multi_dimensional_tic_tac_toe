@@ -193,6 +193,7 @@ void get_player_move(Board &board, string firstname, char piece) {
                     }
                   }
              }
+         
      }while(!valid_move);
     
     board.edit_board(rows, columns, piece);
@@ -219,7 +220,9 @@ int get_players(Player players[]) {
         || (number_of_players.length() != 1);
         
         if (validated_amount_of_players_choosen) {
+            
             cout << "Invalid Input" << endl;
+            
         }
         
     }  while(validated_amount_of_players_choosen);
@@ -239,7 +242,9 @@ int get_players(Player players[]) {
             
             
             if (!validated_name) {
+                
                 cout << "Invalid Input" << endl;
+                
             }
         
             else {
@@ -248,7 +253,9 @@ int get_players(Player players[]) {
                 validated_name = !(players[i].lastname != " ") || !players[i].lastname.empty();
                 
                 if (!validated_name) {
+                    
                     cout << "Invalid Input" << endl;
+                    
                 }
                 
             }
@@ -270,6 +277,7 @@ void standardize_names(Player &player, string user_entered_name) {
     
     int spaces = 0;
     player.firstname[0] = toupper(user_entered_name[0]);
+    
     for (int i = 1; i < user_entered_name.length(); i++) {
         
         if (user_entered_name[i] == ' ') {
@@ -301,6 +309,7 @@ void standardize_names(Player &player, string user_entered_name) {
 //==================================
 
 void update_loses(Player player[5], int winning_index, int amount_players) {
+    
     for (int i = 0; i < amount_players; i++) {
         
         if (i == winning_index) {
@@ -330,7 +339,9 @@ void display_stats(Player player[5], int amount_of_players, int draws, int total
         int length_of_current_name = int(player[i].firstname.length() + player[i].lastname.length());
         
         if (length_of_current_name < 3) {
+            
             length_of_current_name = 3;
+            
         }
         
         string spaces = set_display_space(player, amount_of_players, length_of_current_name);
@@ -338,8 +349,11 @@ void display_stats(Player player[5], int amount_of_players, int draws, int total
         cout << "|  " << player[i].wins;
         cout << "   |  " << player[i].loses;
         cout << "  |  " << draws << " |" << endl;
+        
         spaces = set_display_space(player, amount_of_players, 0);
+        
         cout << spaces << "  ------ ----- ---- " << endl;
+        
     }
 }
 
@@ -363,6 +377,7 @@ string set_display_space(Player player[5], int amount_of_players, int current_pl
     for (int i = 0; i < (longest_name + 2) - current_player_name_length; i++) {
         
         empty_string += " ";
+        
     }
         return empty_string;
     
@@ -378,6 +393,7 @@ bool validate_name(string full_name) {
         if ((int(valdiating_char) < 65 || int(valdiating_char) > 90) && valdiating_char != ' ') {
             
             return false;
+            
         }
     }
     
@@ -410,6 +426,7 @@ void get_board_dimesions(int &rows, int &columns) {
         getline(cin, user_generated_rows);
         cout << "Enter amount of columns: ";
         getline(cin, user_generted_columns);
+        
         user_generated_dimesions = user_generated_rows + " " + user_generted_columns;
     
         if (user_generated_rows.length() > 3 || user_generted_columns.length() > 3 ||
@@ -454,12 +471,15 @@ void get_board_dimesions(int &rows, int &columns) {
         
         else if (int(user_generated_dimesions[counter]) >= 49 &&
                  int(user_generated_dimesions[counter]) <= 57  ){
+            
             temp += user_generated_dimesions[counter];
             
         }
             
         else {
+            
             valid_input = false;
+            
         }
             
         counter += 1;
@@ -480,9 +500,13 @@ void get_board_dimesions(int &rows, int &columns) {
 
 int get_next_game_starter(int next_player, int amount_of_turns, int number_of_players) {
     next_player = amount_of_turns + 1;
+    
     if (next_player >= number_of_players) {
+        
         next_player = 0;
+        
     }
+    
     return next_player;
 }
 
