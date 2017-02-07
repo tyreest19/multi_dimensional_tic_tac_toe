@@ -5,11 +5,7 @@
 //  Created by Tyree Stevenson on 1/28/17.
 //  Copyright © 2017 Tyree Stevenson. All rights reserved.
 //
-//TODO {
-//    5. who comes next after game conclusion.
-//    6. ALLOW USER TO END OR CONTINUE GAME.
-//    7. DOCUMENTATION.
-//}
+
 
 #include <string>
 #include <iostream>
@@ -26,7 +22,7 @@ struct Player {
 };
 
 bool validate_name(string full_name);
-void get_board_dimesions(int &rows, int &columns);
+int get_user_choosen_dimension(string name_of_dimension, int min, int max);
 void get_player_move(Board &board, string firstname, char piece);
 int get_players(Player players[5]);
 int get_next_game_starter(int next_player, int amount_of_turns, int number_of_players);
@@ -72,14 +68,13 @@ int main(int argc, const char * argv[]) {
 
 void play_game(Player players[5], int number_of_players, int &draws, int &next_player) {
     
-    int rows;
-    int columns;
+    int rows = get_user_choosen_dimension("row", 3, 13);
+    int columns = get_user_choosen_dimension("columns", 3, 16);
     int amount_of_turns = next_player;
     int player_turn = 0;
     int starting_player = next_player;
     bool game_won = false;
     
-    get_board_dimesions(rows, columns);
     Board board(rows, columns);
     
     while (player_turn != (rows * columns) && !game_won) {
@@ -405,100 +400,61 @@ bool validate_name(string full_name) {
 // also validates the input.
 //======================================================================================
 
-void get_board_dimesions(int &rows, int &columns) {
-    
-    string user_generated_dimesions;
-    string temp;
-    bool valid_input;
+int get_user_choosen_dimension(string name_of_dimension, int min, int max) {
+    string dimension;
+    int numeric_value_of_dimnesion;
     
     do {
         
-        int counter = 0;
-        valid_input = true;
-        temp = "";
-        rows = 0;
-        columns = 0;
-        string user_generated_rows;
-        string user_generted_columns;
-
+        numeric_value_of_dimnesion = 0;
         
-        cout << "Enter amount of rows: ";
-        getline(cin, user_generated_rows);
-        cout << "Enter amount of columns: ";
-        getline(cin, user_generted_columns);
+        cout << "Enter a number of " << name_of_dimension  << " between from "<< min << " to "  << max << ": ";
+        getline(cin, dimension);
         
-        user_generated_dimesions = user_generated_rows + " " + user_generted_columns;
-    
-        if (user_generated_rows.length() > 3 || user_generted_columns.length() > 3 ||
-            user_generated_rows[1] == ' ' || user_generted_columns[1] == ' ') {
+        if (dimension.length() <= 2) {
             
-            cout << "Invalid input " << endl;
-            valid_input = false;
-            
-        }
-        
-        else if (user_generated_dimesions[0] == ' ' || user_generated_dimesions.length() > 5 ||
-                 user_generated_dimesions[user_generated_dimesions.length() - 1] == ' ') {
-        
-                cout << "Invalid input " << endl;
-                valid_input = false;
-        
-        }
-        
-    
-    else {
-        
-        user_generated_dimesions += " ";
-        while (valid_input && counter < user_generated_dimesions.length()) {
-
-        if (user_generated_dimesions[counter] == ' ') {
-        
-            
-            if (!rows) {
+            if (int(dimension[0]) <= 51 && int(dimension[0]) <= 57) {
                 
-                rows = stoi(temp);
+                if( dimension.length() == 1) {
+                    
+                    numeric_value_of_dimnesion = stoi(dimension);
+                    
+                }
+                
+                else if (dimension.length() == 2 && int(dimension[1]) >= 51 && int(dimension[1]) <= 57) {
+                    
+                    numeric_value_of_dimnesion = stoi(dimension);
+                    
+                }
+                
+                else {
+                    
+                    cout << "Invalid input" << endl;
+                }
                 
             }
             
             else {
                 
-                columns = stoi(temp);
-                
+                cout << "Invalid input" << endl;
             }
             
-            temp = "";
         }
         
-        else if (int(user_generated_dimesions[counter]) >= 49 &&
-                 int(user_generated_dimesions[counter]) <= 57  ){
-            
-            temp += user_generated_dimesions[counter];
-            
-        }
-            
         else {
             
-            valid_input = false;
-            
-        }
-            
-        counter += 1;
+            cout << "Invalid Input" << endl;
             
         }
         
-        if (!((rows >= 3 && rows <= 13)  && (columns >= 3 && columns <= 16))) {
-            
-            cout << "invalid input" << endl;
-            valid_input = false;
-            
-        }
-    }
+    } while (!(numeric_value_of_dimnesion >= min && numeric_value_of_dimnesion <= max));
     
-        
-    }while(!valid_input);
+    
+    return numeric_value_of_dimnesion;
 }
 
 int get_next_game_starter(int next_player, int amount_of_turns, int number_of_players) {
+    
     next_player = amount_of_turns + 1;
     
     if (next_player >= number_of_players) {
@@ -509,8 +465,3 @@ int get_next_game_starter(int next_player, int amount_of_turns, int number_of_pl
     
     return next_player;
 }
-
-
-
-
-
