@@ -52,6 +52,7 @@ int main(int argc, const char * argv[]) {
            
             cout << "If you wish to continue enter y and if you want to quit enter n: ";
             getline(cin, user_choice);
+            user_choice = tolower(user_choice[0]);
             
 
         }
@@ -71,13 +72,13 @@ void play_game(Player players[5], int number_of_players, int &draws, int &next_p
     int rows = get_user_choosen_dimension("row", 3, 13);
     int columns = get_user_choosen_dimension("columns", 3, 16);
     int amount_of_turns = next_player;
-    int player_turn = 0;
+    int total_moves = 0;
     int starting_player = next_player;
     bool game_won = false;
     
     Board board(rows, columns);
     
-    while (player_turn != (rows * columns) && !game_won) {
+    while (total_moves != (rows * columns) && !game_won) {
         
         board.display_board();
         get_player_move(board, players[amount_of_turns].firstname, players[amount_of_turns].piece);
@@ -98,27 +99,33 @@ void play_game(Player players[5], int number_of_players, int &draws, int &next_p
         else if (amount_of_turns >= number_of_players - 1) {
             
             amount_of_turns = 0;
-            player_turn += 1;
+            total_moves += 1;
 
         }
         
         else {
             
             amount_of_turns += 1;
-            player_turn += 1;
+            total_moves += 1;
         }
     }
     
-    if (board.search_for_tie_game(amount_of_turns)) {
+    if (board.search_for_tie_game(total_moves)) {
         
         board.display_board();
         draws += 1;
         next_player = get_next_game_starter(starting_player, amount_of_turns, number_of_players);
-        cout << "The game ended in a draw" << endl;
+        cout << endl <<"The game ended in a draw" << endl;
         
     }
     
 }
+
+//============================================================================================
+// Gets player move and places piece on the board.
+// Parameters: The Game Board, Player's firstname, and Player's piece
+// also valdiates the player move and prompts player to enter correct move.
+//============================================================================================
 
 void get_player_move(Board &board, string firstname, char piece) {
     
@@ -162,7 +169,7 @@ void get_player_move(Board &board, string firstname, char piece) {
 
                  else if(!(int(move[counter]) >= 65 && int(move[counter]) <= 77)){
                     
-                     if(!(int(move[counter]) >= 49 && int(move[counter]) <= 59)) {
+                     if(!(int(move[counter]) >= 48 && int(move[counter]) <= 59)) {
                      
                      cout << "invalid input";
                      valid_move = false;
@@ -182,7 +189,7 @@ void get_player_move(Board &board, string firstname, char piece) {
              if (valid_move) {
                  columns += stoi(temporary_columns) - 1;
                  valid_move = (board.check_avaiblity(rows, columns)) && (board.check_bounds(rows, columns));
-                 if (columns + 1 > board.check_columns_size() || !valid_move) {
+                 if (columns + 1 > board.check_columns_size() || !valid_move || columns + 1 < 1) {
                      cout << "Invalid input" ;
                      valid_move = false;
                     }
@@ -321,6 +328,11 @@ void update_loses(Player player[5], int winning_index, int amount_players) {
     }
 }
 
+//============================================================================================
+// This function displays players stats and total games played.
+//============================================================================================
+
+
 void display_stats(Player player[5], int amount_of_players, int draws, int total_games_played) {
     
     string spaces = set_display_space(player, amount_of_players, 0);
@@ -351,6 +363,10 @@ void display_stats(Player player[5], int amount_of_players, int draws, int total
         
     }
 }
+
+//============================================================================================
+// This function creates the spacing for "display_stats" function
+//============================================================================================
 
 string set_display_space(Player player[5], int amount_of_players, int current_player_name_length) {
     
@@ -413,12 +429,9 @@ int get_user_choosen_dimension(string name_of_dimension, int min, int max) {
         
         if (dimension.length() <= 2) {
             
-            if (int(dimension[0]) <= 51 && int(dimension[0]) <= 57) {
-                
-                if( dimension.length() == 1) {
+            if (int(dimension[0]) >= 51 && int(dimension[0]) <= 57 && dimension.length() == 1) {
                     
                     numeric_value_of_dimnesion = stoi(dimension);
-                    
                 }
                 
                 else if (dimension.length() == 2 && int(dimension[1]) >= 51 && int(dimension[1]) <= 57) {
@@ -431,15 +444,7 @@ int get_user_choosen_dimension(string name_of_dimension, int min, int max) {
                     
                     cout << "Invalid input" << endl;
                 }
-                
             }
-            
-            else {
-                
-                cout << "Invalid input" << endl;
-            }
-            
-        }
         
         else {
             
@@ -452,6 +457,10 @@ int get_user_choosen_dimension(string name_of_dimension, int min, int max) {
     
     return numeric_value_of_dimnesion;
 }
+
+//======================================================================================
+// Returns the index of the next player to start the game.
+//======================================================================================
 
 int get_next_game_starter(int next_player, int amount_of_turns, int number_of_players) {
     

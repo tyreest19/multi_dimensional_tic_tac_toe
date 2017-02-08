@@ -23,6 +23,10 @@ Board::Board(int user_choosen_rows, int user_choosen_columns) {
     
 }
 
+//============================================================================================
+// Generates the game board.
+//============================================================================================
+
 void Board:: generate_board() {
     
     for (int i = 0; i < 13; i++) {
@@ -316,17 +320,29 @@ bool Board:: search_for_tie_game(int turns_completed) {
     
 }
 
+//============================================================================================
+// Checks the game board for aviable spaces.
+//============================================================================================
+
 bool Board:: check_avaiblity(int row, int column) {
     
     return board[row][column] == ' ';
     
 }
 
+//============================================================================================
+// Check if a choosen board dimension is out of bounds.
+//============================================================================================
+
 bool Board:: check_bounds(int user_enter_row, int user_enter_column) {
     
     return (rows >= user_enter_row) && (columns >= user_enter_column);
     
 }
+
+//============================================================================================
+// Returns column size of the board.
+//============================================================================================
 
 int Board:: check_columns_size() {
     
