@@ -18,7 +18,6 @@ struct Player {
     int wins = 0;
     int loses = 0;
     char piece;
-    bool turn;
 };
 
 bool validate_name(string full_name);
@@ -41,7 +40,9 @@ int main(int argc, const char * argv[]) {
     int total_games_played = 0;
     int index_of_next_player = 0;
     string user_choice;
+    
     do {
+        
         user_choice = " ";
         
         play_game(players, number_of_players, draws, index_of_next_player);
@@ -58,6 +59,7 @@ int main(int argc, const char * argv[]) {
         }
         
     } while (user_choice == "y");
+    
     return 0;
 }
 
@@ -238,7 +240,7 @@ int get_players(Player players[]) {
         
         do {
             
-            cout << "Enter Player " << i + 1 << " full name: ";
+            cout << "Player " << i + 1 << " enter your full name: ";
             getline(cin, user_entered_name);
             validated_name = validate_name(user_entered_name);
             
@@ -261,6 +263,7 @@ int get_players(Player players[]) {
                 }
                 
             }
+            
         } while (!validated_name);
         
         players[i].piece = 'a' + i;
@@ -303,6 +306,7 @@ void standardize_names(Player &player, string user_entered_name) {
             
         }
     }
+    
     player.lastname.erase(0,1);
 }
 
@@ -390,6 +394,7 @@ string set_display_space(Player player[5], int amount_of_players, int current_pl
         empty_string += " ";
         
     }
+    
         return empty_string;
     
 }
@@ -399,7 +404,6 @@ bool validate_name(string full_name) {
     for (int i = 0; i < full_name.length(); i++) {
     
         char valdiating_char = toupper(full_name[i]);
-        
         
         if ((int(valdiating_char) < 65 || int(valdiating_char) > 90) && valdiating_char != ' ') {
             
@@ -417,6 +421,7 @@ bool validate_name(string full_name) {
 //======================================================================================
 
 int get_user_choosen_dimension(string name_of_dimension, int min, int max) {
+    
     string dimension;
     int numeric_value_of_dimnesion;
     
@@ -429,12 +434,12 @@ int get_user_choosen_dimension(string name_of_dimension, int min, int max) {
         
         if (dimension.length() <= 2) {
             
-            if (int(dimension[0]) >= 51 && int(dimension[0]) <= 57 && dimension.length() == 1) {
+            if (int(dimension[0]) >= 48 && int(dimension[0]) <= 57 && dimension.length() == 1) {
                     
                     numeric_value_of_dimnesion = stoi(dimension);
                 }
                 
-                else if (dimension.length() == 2 && int(dimension[1]) >= 51 && int(dimension[1]) <= 57) {
+                else if (dimension.length() == 2 && int(dimension[1]) >= 48 && int(dimension[1]) <= 57) {
                     
                     numeric_value_of_dimnesion = stoi(dimension);
                     
