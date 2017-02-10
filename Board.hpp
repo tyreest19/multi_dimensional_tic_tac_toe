@@ -18,23 +18,23 @@ class Board {
 public:
     
     Board(int rows, int columns);
-    void edit_board(int row, int column, char players_piece);
-    void display_board();
-    bool search_for_win(char piece);
-    bool search_for_tie_game(int turns_completed);
-    bool check_avaiblity(int row, int column);
-    bool check_bounds(int user_enter_row, int user_enter_column);
-    int check_columns_size();
+    void Edit_Board(int row, int column, char players_piece);
+    void Display_Board();
+    bool Search_For_Win(char piece);
+    bool Search_For_Tie_Game(int turns_completed);
+    bool Check_Avaiblity(int row, int column);
+    bool Check_Bounds(int user_enter_row, int user_enter_column);
+    int Check_Columns_Size();
 
 private:
     
     int rows;
     int columns;
     char board[13][16];
-    void generate_board();
-    bool search_for_diagonal_win(char piece);
-    bool search_for_horizontal_win(char piece);
-    bool search_for_vertical_win(char piece);
+    void Generate_Board();
+    bool Search_For_Diagonal_Win(char piece);
+    bool Search_For_Horizontal_Win(char piece);
+    bool Search_For_Vertical_Win(char piece);
     
 };
     

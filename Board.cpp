@@ -19,7 +19,7 @@ Board::Board(int user_choosen_rows, int user_choosen_columns) {
     
     rows = user_choosen_rows;
     columns = user_choosen_columns;
-    generate_board();
+    Generate_Board();
     
 }
 
@@ -27,7 +27,7 @@ Board::Board(int user_choosen_rows, int user_choosen_columns) {
 // Generates the game board.
 //============================================================================================
 
-void Board:: generate_board() {
+void Board:: Generate_Board() {
     
     for (int i = 0; i < 13; i++) {
         
@@ -43,7 +43,7 @@ void Board:: generate_board() {
 // Allows user to edit the board.
 //============================================================================================
 
-void Board:: edit_board(int row, int column, char players_piece) {
+void Board:: Edit_Board(int row, int column, char players_piece) {
     
         board[row][column] = players_piece;
     
@@ -53,7 +53,7 @@ void Board:: edit_board(int row, int column, char players_piece) {
 // Displays the board.
 //============================================================================================
 
-void Board:: display_board() {
+void Board:: Display_Board() {
     
     int amount_of_interations = rows;
 
@@ -123,7 +123,7 @@ void Board:: display_board() {
             
         }
         
-        cout << "| "<<char('A' + (rows - amount_of_interations));
+        cout << "|"<<char('A' + (rows - amount_of_interations));
 
         if (amount_of_interations - 1 == 0) {
             
@@ -197,13 +197,13 @@ void Board:: display_board() {
 // Searches for win by checking all of the possible winning methods.
 //============================================================================================
 
-bool Board:: search_for_win(char piece) {
+bool Board:: Search_For_Win(char piece) {
     
-    bool diagonal_win = Board:: search_for_diagonal_win(piece);
+    bool diagonal_win = Board:: Search_For_Diagonal_Win(piece);
     
-    bool horizontal_win = Board:: search_for_horizontal_win(piece);
+    bool horizontal_win = Board:: Search_For_Horizontal_Win(piece);
     
-    bool vertical_win = Board:: search_for_vertical_win(piece);
+    bool vertical_win = Board:: Search_For_Vertical_Win(piece);
     
     if (diagonal_win || horizontal_win || vertical_win) {
         
@@ -219,7 +219,7 @@ bool Board:: search_for_win(char piece) {
 // Searches the board for a winning diagnol combination and if combination found it is capitalized and returns true.
 //============================================================================================
 
-bool Board:: search_for_diagonal_win(char piece) {
+bool Board:: Search_For_Diagonal_Win(char piece) {
     
     for (int i = 0; i < rows; i++) {
         
@@ -263,7 +263,7 @@ bool Board:: search_for_diagonal_win(char piece) {
 // Searches the board for a winning horizontal combination if combination found it is capitalized and returns true.
 //============================================================================================
 
-bool Board:: search_for_horizontal_win(char piece) {
+bool Board:: Search_For_Horizontal_Win(char piece) {
     
     for (int i = 0; i < rows; i++) {
         
@@ -289,7 +289,7 @@ bool Board:: search_for_horizontal_win(char piece) {
 // Searches the board for a winning vertical combination if combination found it is capitalized and  returns true.
 //============================================================================================
 
-bool Board:: search_for_vertical_win(char piece) {
+bool Board:: Search_For_Vertical_Win(char piece) {
     
     for (int i = 0; i < rows; i++) {
         
@@ -314,7 +314,7 @@ bool Board:: search_for_vertical_win(char piece) {
 // Searches for tie game.
 //============================================================================================
 
-bool Board:: search_for_tie_game(int turns_completed) {
+bool Board:: Search_For_Tie_Game(int turns_completed) {
     
     return turns_completed == rows * columns;
     
@@ -324,7 +324,7 @@ bool Board:: search_for_tie_game(int turns_completed) {
 // Checks the game board for aviable spaces.
 //============================================================================================
 
-bool Board:: check_avaiblity(int row, int column) {
+bool Board:: Check_Avaiblity(int row, int column) {
     
     return board[row][column] == ' ';
     
@@ -334,7 +334,7 @@ bool Board:: check_avaiblity(int row, int column) {
 // Check if a choosen board dimension is out of bounds.
 //============================================================================================
 
-bool Board:: check_bounds(int user_enter_row, int user_enter_column) {
+bool Board:: Check_Bounds(int user_enter_row, int user_enter_column) {
     
     return (rows >= user_enter_row) && (columns >= user_enter_column);
     
@@ -344,7 +344,7 @@ bool Board:: check_bounds(int user_enter_row, int user_enter_column) {
 // Returns column size of the board.
 //============================================================================================
 
-int Board:: check_columns_size() {
+int Board:: Check_Columns_Size() {
     
     return columns;
     
