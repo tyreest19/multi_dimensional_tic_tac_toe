@@ -23,12 +23,12 @@ struct Player {
 bool validate_name(string full_name);
 int get_user_choosen_dimension(string name_of_dimension, int min, int max);
 void get_player_move(Board &board, string firstname, char piece);
-int get_players(Player players[5]);
+int get_players(Player players[]);
 int get_next_game_starter(int next_player, int amount_of_turns, int number_of_players);
-void play_game(Player players[5], int number_of_players, int &draws, int &next_player);
-void update_loses(Player player[5], int winning_index, int amount_players);
-void display_stats(Player player[5], int amount_of_players, int draws, int total_games_played);
-string set_display_space(Player player[5], int amount_of_players, int current_player_name_length);
+void play_game(Player players[], int number_of_players, int &draws, int &next_player);
+void update_loses(Player player[], int winning_index, int amount_players);
+void display_stats(Player player[], int amount_of_players, int draws, int total_games_played);
+string set_display_space(Player player[], int amount_of_players, int current_player_name_length);
 void standardize_names(Player &player, string user_entered_name);
 
 using namespace std;
@@ -55,7 +55,11 @@ int main(int argc, const char * argv[]) {
             getline(cin, user_choice);
             user_choice = tolower(user_choice[0]);
             
-
+            if (user_choice != "y" && user_choice != "n") {
+                
+               cout << "Invalid input" << endl;
+                
+            }
         }
         
     } while (user_choice == "y");
@@ -69,7 +73,7 @@ int main(int argc, const char * argv[]) {
 // Then allows the players to play a tic-tac_toe game which displays, updates, and checks for win/draw after every // move
 //============================================================================================
 
-void play_game(Player players[5], int number_of_players, int &draws, int &next_player) {
+void play_game(Player players[], int number_of_players, int &draws, int &next_player) {
     
     int rows = get_user_choosen_dimension("row", 3, 13);
     int columns = get_user_choosen_dimension("columns", 3, 16);
@@ -314,7 +318,7 @@ void standardize_names(Player &player, string user_entered_name) {
 // Updates players loses
 //==================================
 
-void update_loses(Player player[5], int winning_index, int amount_players) {
+void update_loses(Player player[], int winning_index, int amount_players) {
     
     for (int i = 0; i < amount_players; i++) {
         
@@ -337,7 +341,7 @@ void update_loses(Player player[5], int winning_index, int amount_players) {
 //============================================================================================
 
 
-void display_stats(Player player[5], int amount_of_players, int draws, int total_games_played) {
+void display_stats(Player player[], int amount_of_players, int draws, int total_games_played) {
     
     string spaces = set_display_space(player, amount_of_players, 0);
     cout << endl;
@@ -372,7 +376,7 @@ void display_stats(Player player[5], int amount_of_players, int draws, int total
 // This function creates the spacing for "display_stats" function
 //============================================================================================
 
-string set_display_space(Player player[5], int amount_of_players, int current_player_name_length) {
+string set_display_space(Player player[], int amount_of_players, int current_player_name_length) {
     
     int longest_name = 0;
     
@@ -399,7 +403,17 @@ string set_display_space(Player player[5], int amount_of_players, int current_pl
     
 }
 
+//======================================================================================
+// Validates users name.
+//======================================================================================
+
 bool validate_name(string full_name) {
+    
+    if (full_name[0] == ' ') {
+        
+        return false;
+        
+    }
     
     for (int i = 0; i < full_name.length(); i++) {
     
@@ -437,11 +451,23 @@ int get_user_choosen_dimension(string name_of_dimension, int min, int max) {
             if (int(dimension[0]) >= 48 && int(dimension[0]) <= 57 && dimension.length() == 1) {
                     
                     numeric_value_of_dimnesion = stoi(dimension);
+                
+                    if (!(numeric_value_of_dimnesion >= min && numeric_value_of_dimnesion <= max)) {
+                    
+                    cout << "Invalid input" << endl;
+                    
+                    }
                 }
                 
                 else if (dimension.length() == 2 && int(dimension[1]) >= 48 && int(dimension[1]) <= 57) {
                     
                     numeric_value_of_dimnesion = stoi(dimension);
+                    
+                    if (!(numeric_value_of_dimnesion >= min && numeric_value_of_dimnesion <= max)) {
+                        
+                        cout << "Invalid input" << endl;
+
+                    }
                     
                 }
                 
