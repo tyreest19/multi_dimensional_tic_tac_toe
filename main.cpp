@@ -64,7 +64,7 @@ int main()
             user_choice[0] = toupper(user_choice[0]);
             
             if (user_choice != "Y" && user_choice != "N") {
-                cout << "Invalid Input" << endl;
+                cout << "Invalid Input !" << endl;
         }
     }
         
@@ -178,7 +178,7 @@ void Get_Player_Move(Board &board, string firstname, char piece)
          if (move.length() < 2 || move.length() > 3)
          {
              
-             cout << "Invalid Input";
+             cout << "Invalid Input !";
              cout << endl;
              
              valid_move = false;
@@ -191,7 +191,7 @@ void Get_Player_Move(Board &board, string firstname, char piece)
              if(!(move[0] >= rows_minium && move[0] <= rows_maxium))
              {
                  
-                 cout << "Invalid Input";
+                 cout << "Invalid Input !";
                  cout << endl;
                  
                  valid_move = false;
@@ -211,7 +211,7 @@ void Get_Player_Move(Board &board, string firstname, char piece)
                      if(!(move[counter] >= column_minum && move[counter] <= column_maxium))
                      {
                      
-                         cout << "Invalid Input";
+                         cout << "Invalid Input !";
                          cout << endl;
                          
                      valid_move = false;
@@ -234,7 +234,7 @@ void Get_Player_Move(Board &board, string firstname, char piece)
                  if (columns + 1 > board.Check_Columns_Size() || !valid_move || columns + 1 < 1)
                  {
                      cout << endl;
-                     cout << "Invalid input";
+                     cout << "Invalid Input !";
                      cout << endl;
                      valid_move = false;
                 }
@@ -273,7 +273,7 @@ int Get_Players(Player players[])
         {
 
             cout << endl;
-            cout << "Invalid Input";
+            cout << "Invalid Input !";
             cout << endl;
             cout << endl;
 
@@ -300,7 +300,7 @@ int Get_Players(Player players[])
             if (!validated_name) {
                 
                 cout << endl;
-                cout << "Invalid Input";
+                cout << "Invalid Input !";
                 cout << endl;
                 cout << endl;
                 
@@ -316,7 +316,7 @@ int Get_Players(Player players[])
                 {
                     
                     cout << endl;
-                    cout << "Invalid Input";
+                    cout << "Invalid Input !";
                     cout << endl;
                     cout << endl;
 
@@ -484,6 +484,7 @@ string Set_Display_Space(Player player[], int amount_of_players, int current_pla
 
 bool Validate_Name(string full_name)
 {
+    int spaces = 0;
     char minimum_char = 'A';
     char maximum_char = 'Z';
     
@@ -496,13 +497,28 @@ bool Validate_Name(string full_name)
     }
     
     for (int i = 0; i < full_name.length(); i++) {
-    
         char valdiating_char = toupper(full_name[i]);
         
-        if ((int(valdiating_char) < minimum_char || int(valdiating_char) > maximum_char) && valdiating_char != ' ') {
+        if ((valdiating_char < minimum_char || valdiating_char > maximum_char) && valdiating_char != ' ')
+        {
             
             return false;
             
+        }
+        
+        if (valdiating_char == ' ')
+        {
+            spaces += 1;
+        }
+        
+        else if (spaces > 1)
+        {
+            return false;
+        }
+        
+        else
+        {
+            spaces = 0;
         }
     }
     
@@ -541,7 +557,7 @@ int Get_User_Choosen_Dimension(string name_of_dimension, int min, int max) {
                     if (!(numeric_value_of_dimnesion >= min && numeric_value_of_dimnesion <= max))
                         {
                         cout << endl;
-                        cout << "Invalid input";
+                        cout << "Invalid Input !";
                         cout << endl;
                         cout << endl;
                         }
@@ -555,7 +571,7 @@ int Get_User_Choosen_Dimension(string name_of_dimension, int min, int max) {
                         if (!(numeric_value_of_dimnesion >= min && numeric_value_of_dimnesion <= max))
                         {
                             cout << endl;
-                            cout << "Invalid input";
+                            cout << "Invalid Input !";
                             cout << endl;
                             cout << endl;
                         }
@@ -565,7 +581,7 @@ int Get_User_Choosen_Dimension(string name_of_dimension, int min, int max) {
                 else
                 {
                     cout << endl;
-                    cout << "Invalid input";
+                    cout << "Invalid Input !";
                     cout << endl;
                     cout << endl;
                 }
@@ -574,7 +590,7 @@ int Get_User_Choosen_Dimension(string name_of_dimension, int min, int max) {
         else
         {
                 cout << endl;
-                cout << "Invalid Input";
+                cout << "Invalid Input !";
                 cout << endl;
                 cout << endl;
 
