@@ -58,15 +58,15 @@ int main()
         
         while (user_choice != "Y" && user_choice != "N")
         {
-           
+            
             cout << "If you wish to continue enter Y and if you want to quit enter N: ";
             getline(cin, user_choice);
             user_choice[0] = toupper(user_choice[0]);
             
             if (user_choice != "Y" && user_choice != "N") {
                 cout << "Invalid Input !" << endl;
+            }
         }
-    }
         
     } while (user_choice == "Y" );
     
@@ -416,8 +416,8 @@ void Display_Stats(Player player[], int amount_of_players, int draws, int total_
     string spaces = Set_Display_Space(player, amount_of_players, 0);
     cout << endl;
     cout << "Total game played = " << total_games_played << endl << endl;
-    cout << spaces << "    WIN  LOSS  DRAWS    " << endl;
-    cout << spaces << "  ------ ----- ---- " << endl;
+    cout << spaces << "  WIN   LOSS   DRAW" << endl;
+    cout << spaces << " ----- ------ ------" << endl;
     
     for (int i = 0; i < amount_of_players; i++)
     {
@@ -431,14 +431,14 @@ void Display_Stats(Player player[], int amount_of_players, int draws, int total_
     }
         
         string spaces = Set_Display_Space(player, amount_of_players, length_of_current_name);
-        cout << player[i].firstname <<player[i].lastname << ' ' << spaces;
+        cout << player[i].firstname <<player[i].lastname << spaces;
         cout << "|  " << player[i].wins;
-        cout << "   |  " << player[i].loses;
-        cout << "  |  " << draws << " |" << endl;
+        cout << "  |  " << player[i].loses;
+        cout << "   |   " << draws << "  |" << endl;
         
         spaces = Set_Display_Space(player, amount_of_players, 0);
         
-        cout << spaces << "  ------ ----- ---- " << endl;
+        cout << spaces << " ----- ------ ------" << endl;
         
     }
 }
